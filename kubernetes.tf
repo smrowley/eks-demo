@@ -19,3 +19,78 @@ provider "kubernetes" {
     ]
   }
 }
+
+locals {
+  namespace = "koncepts"
+  app_name = "koncepts-demo"
+}
+
+resource "kubernetes_namespace" "koncepts" {
+  metadata {
+    name = "${local.namespace}"
+  }
+}
+
+resource "kubernetes_deployment" "koncepts_demo" {
+  metadata {
+    name = "${local.app_name}"
+    namespace = "${local.namespace}"
+    labels = {
+      "app" = "${local.app_name}"
+    }
+  }
+  spec {
+    strategy {
+      type = "RollingUpdate"
+    }
+    replicas = 1
+    selector {
+      match_labels = {
+        "app" = "${local.app_name}"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          "app" = "${local.app_name}"
+        }
+      }
+      spec {
+        container {
+          name = "${local.app_name}"
+          image = "srowley/koncepts:latest"
+          image_pull_policy = "Always"
+          port {
+            name = "http"
+            container_port = 8080
+            protocol = "TCP"
+          }
+          port {
+            name = "metrics"
+            container_port = 8081
+            protocol = "TCP"
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "koncepts_demo" {
+  metadata {
+    name = "${local.app_name}-lb"
+    namespace = "${local.namespace}"
+  }
+  spec {
+    selector = {
+      "app" = "${local.app_name}"
+    }
+    type = "LoadBalancer"
+    port {
+      name = "http"
+      protocol = "TCP"
+      port = 80
+      target_port = "8080"
+    }
+  }
+}
