@@ -32,3 +32,8 @@ output "cluster_name" {
   description = "Kubernetes Cluster Name"
   value       = local.cluster_name
 }
+
+output "app_url" {
+  description = "Application url"
+  value       = resource.kubernetes_service.koncepts_demo.status.0.load_balancer.0.ingress.0.hostname
+}
