@@ -37,3 +37,8 @@ output "app_url" {
   description = "Application url"
   value       = kubernetes_service.koncepts_demo.status.0.load_balancer.0.ingress.0.hostname
 }
+
+output "app_namespace" {
+  description = "K8s application namespace"
+  value       = local.namespace
+}
