@@ -74,6 +74,10 @@ resource "kubernetes_deployment" "koncepts_demo" {
       }
     }
   }
+
+  depends_on = [
+    module.eks
+  ]
 }
 
 resource "kubernetes_service" "koncepts_demo" {
@@ -93,4 +97,8 @@ resource "kubernetes_service" "koncepts_demo" {
       target_port = "8080"
     }
   }
+
+  depends_on = [
+    module.eks
+  ]
 }
