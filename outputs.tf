@@ -35,5 +35,5 @@ output "cluster_name" {
 
 output "app_url" {
   description = "Application url"
-  value       = resource.kubernetes_service.koncepts_demo.status.0.load_balancer.0.ingress.0.hostname
+  value       = kubernetes_service.koncepts_demo.status.0.load_balancer.0.ingress.0.hostname
 }
