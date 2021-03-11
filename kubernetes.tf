@@ -27,16 +27,16 @@ locals {
 
 resource "kubernetes_namespace" "koncepts" {
   metadata {
-    name = "${local.namespace}"
+    name = local.namespace
   }
 }
 
 resource "kubernetes_deployment" "koncepts_demo" {
   metadata {
-    name = "${local.app_name}"
-    namespace = "${local.namespace}"
+    name = local.app_name
+    namespace = local.namespace
     labels = {
-      "app" = "${local.app_name}"
+      "app" = local.app_name
     }
   }
   spec {
@@ -46,18 +46,18 @@ resource "kubernetes_deployment" "koncepts_demo" {
     replicas = 1
     selector {
       match_labels = {
-        "app" = "${local.app_name}"
+        "app" = local.app_name
       }
     }
     template {
       metadata {
         labels = {
-          "app" = "${local.app_name}"
+          "app" = local.app_name
         }
       }
       spec {
         container {
-          name = "${local.app_name}"
+          name = local.app_name
           image = "srowley/koncepts:latest"
           image_pull_policy = "Always"
           port {
@@ -79,11 +79,11 @@ resource "kubernetes_deployment" "koncepts_demo" {
 resource "kubernetes_service" "koncepts_demo" {
   metadata {
     name = "${local.app_name}-lb"
-    namespace = "${local.namespace}"
+    namespace = local.namespace
   }
   spec {
     selector = {
-      "app" = "${local.app_name}"
+      "app" = local.app_name
     }
     type = "LoadBalancer"
     port {
