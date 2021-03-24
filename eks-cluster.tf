@@ -21,16 +21,16 @@ module "eks" {
       name                          = "eks-worker-group-1"
       instance_type                 = "t2.small"
       additional_userdata           = "echo foo bar"
-      asg_desired_capacity          = 1
+      asg_desired_capacity          = var.small_count
       additional_security_group_ids = [aws_security_group.worker_group_mgmt_one.id]
     },
-    /*{
+    {
       name                          = "eks-worker-group-2"
       instance_type                 = "t2.medium"
       additional_userdata           = "echo foo bar"
+      asg_desired_capacity          = var.medium_count
       additional_security_group_ids = [aws_security_group.worker_group_mgmt_two.id]
-      asg_desired_capacity          = 1
-    },*/
+    },
   ]
 }
 
@@ -40,4 +40,16 @@ data "aws_eks_cluster" "cluster" {
 
 data "aws_eks_cluster_auth" "cluster" {
   name = module.eks.cluster_id
+}
+
+variable "small_count" {
+  type        = number
+  default     = 1
+  description = "Number of t2.small workers"
+}
+
+variable "medium_count" {
+  type        = number
+  default     = 0
+  description = "Number of t2.medium workers"
 }
